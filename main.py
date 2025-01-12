@@ -159,7 +159,7 @@ class APIFrame(wx.Frame):
     def update_language(self):
         labels = {
             "中文": {
-                "title": "API密钥检测器",
+                "title": "大模型API密钥检测器",
                 "balance": "获取额度",
                 "models": "获取模型",
                 "test": "模型测试",
@@ -167,7 +167,7 @@ class APIFrame(wx.Frame):
                 "value": "值"
             },
             "English": {
-                "title": "API Key Detector",
+                "title": "LLMs API Key Detector",
                 "balance": "Get Balance",
                 "models": "Get Models",
                 "test": "Test Model",
