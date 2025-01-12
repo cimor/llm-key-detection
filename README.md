@@ -4,7 +4,7 @@
 
 ## 功能特点
 
-- 检查API密钥余额和使用情况
+- 支持检查基于 [One API](https://github.com/songquanpeng/one-api) 部署的大模型API密钥余额和使用情况
 - 获取可用模型列表
 - 测试模型响应
 - 支持中英文界面切换

@@ -45,6 +45,14 @@ class APIFrame(wx.Frame):
         self.url = None
         self.language = "中文"
         
+        # 初始化UI组件
+        self.init_ui()
+        
+        # 设置默认语言
+        self.update_language()
+        
+    def init_ui(self):
+        """初始化所有UI组件"""
         # 创建主面板
         self.panel = wx.Panel(self)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
@@ -54,7 +62,19 @@ class APIFrame(wx.Frame):
         self.panel.SetSizer(panel_sizer)
         main_sizer.Add(self.panel, 1, wx.EXPAND | wx.ALL, 5)
         
-        # 创建菜单栏
+        # 初始化各个区域
+        self.init_menu()
+        config_sizer = self.init_config_section()
+        button_sizer = self.init_button_section()
+        grid_sizer = self.init_grid_section()
+        
+        # 添加所有控件到面板布局
+        panel_sizer.Add(config_sizer, 0, wx.ALL | wx.EXPAND, 5)
+        panel_sizer.Add(button_sizer, 0, wx.ALL | wx.EXPAND, 5)
+        panel_sizer.Add(grid_sizer, 1, wx.ALL | wx.EXPAND, 5)
+    
+    def init_menu(self):
+        """初始化菜单栏"""
         menubar = wx.MenuBar()
         file_menu = wx.Menu()
         language_menu = wx.Menu()
@@ -70,8 +90,9 @@ class APIFrame(wx.Frame):
         file_menu.AppendSubMenu(language_menu, "语言/Language")
         menubar.Append(file_menu, "设置")
         self.SetMenuBar(menubar)
-        
-        # API配置区域
+    
+    def init_config_section(self):
+        """初始化API配置区域"""
         config_box = wx.StaticBox(self.panel, label="API Configuration")
         config_sizer = wx.StaticBoxSizer(config_box, wx.VERTICAL)
         
@@ -92,7 +113,10 @@ class APIFrame(wx.Frame):
         config_sizer.Add(url_sizer, 0, wx.EXPAND | wx.ALL, 5)
         config_sizer.Add(key_sizer, 0, wx.EXPAND | wx.ALL, 5)
         
-        # 按钮区域
+        return config_sizer
+    
+    def init_button_section(self):
+        """初始化按钮区域"""
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.balance_btn = wx.Button(self.panel, label="获取额度")
         self.models_btn = wx.Button(self.panel, label="获取模型")
@@ -100,6 +124,17 @@ class APIFrame(wx.Frame):
         
         for btn in [self.balance_btn, self.models_btn, self.test_btn]:
             button_sizer.Add(btn, 1, wx.ALL | wx.EXPAND, 5)
+        
+        # 绑定事件
+        self.balance_btn.Bind(wx.EVT_BUTTON, self.on_get_balance)
+        self.models_btn.Bind(wx.EVT_BUTTON, self.on_get_models)
+        self.test_btn.Bind(wx.EVT_BUTTON, self.on_test_model)
+        
+        return button_sizer
+    
+    def init_grid_section(self):
+        """初始化表格和输出区域"""
+        grid_sizer = wx.BoxSizer(wx.VERTICAL)
         
         # 表格
         self.grid = Grid(self.panel)
@@ -112,19 +147,10 @@ class APIFrame(wx.Frame):
         self.output = wx.TextCtrl(self.panel, style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL)
         self.output.SetMinSize((750, 150))
         
-        # 添加所有控件到面板布局
-        panel_sizer.Add(config_sizer, 0, wx.ALL | wx.EXPAND, 5)
-        panel_sizer.Add(button_sizer, 0, wx.ALL | wx.EXPAND, 5)
-        panel_sizer.Add(self.grid, 1, wx.ALL | wx.EXPAND, 5)
-        panel_sizer.Add(self.output, 1, wx.ALL | wx.EXPAND, 5)
+        grid_sizer.Add(self.grid, 1, wx.ALL | wx.EXPAND, 5)
+        grid_sizer.Add(self.output, 1, wx.ALL | wx.EXPAND, 5)
         
-        # 绑定事件
-        self.balance_btn.Bind(wx.EVT_BUTTON, self.on_get_balance)
-        self.models_btn.Bind(wx.EVT_BUTTON, self.on_get_models)
-        self.test_btn.Bind(wx.EVT_BUTTON, self.on_test_model)
-        
-        # 设置默认语言
-        self.update_language()
+        return grid_sizer
     
     def on_language_change(self, lang):
         self.language = lang
